@@ -1,6 +1,13 @@
-provider "aws" {
-  region = "eu-west-1"
-}
+terraform {
+      backend "remote" {
+          
+        organization = "Myte-mandr "
+
+        workspaces {
+          name = "Myte-test"
+        }
+      }
+    }
 
 ################# EC2 ##################
 data "aws_ami" "ubuntu" {
