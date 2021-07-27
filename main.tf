@@ -1,7 +1,7 @@
 terraform {
       backend "remote" {
           
-        organization = "Myte-mandr "
+        organization = "Myte-mandr"
 
         workspaces {
           name = "Myte-test"
