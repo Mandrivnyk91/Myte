@@ -9,6 +9,10 @@ terraform {
       }
     }
 
+provider "aws" {
+  region = "eu-west-1"
+}
+
 ################# EC2 ##################
 data "aws_ami" "ubuntu" {
   most_recent = true
