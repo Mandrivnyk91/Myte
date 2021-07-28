@@ -1,25 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "3.26.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "3.0.1"
-    }
-  }
-  required_version = ">= 0.14"
-
-  backend "remote" {
-    organization = "Myte-mandr"
-
-    workspaces {
-      name = "Myte-test"
-    }
-  }
-}    
-
 provider "aws" {
   region = "eu-west-1"
 }
@@ -215,4 +193,44 @@ data "aws_iam_policy_document" "for_rol" {
     actions = [ "s3:GetObject","s3:DeleteObject"]
     resources = ["*"]
   }
+}
+
+
+resource "aws_iam_user" "github" {
+  name = "github"
+}
+
+resource "aws_iam_access_key" "github" {
+  user = aws_iam_user.github.name
+}
+
+resource "aws_iam_user_policy" "github" {
+  name = "test"
+  user = aws_iam_user.github.name
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Allow",
+      "Resource": "${aws_s3_bucket.myte-web-res.arn}/*"
+    }
+  ]
+}
+EOF
+}
+
+output "aws_iam_secret_key" {
+  value = aws_iam_access_key.github.secret
+  sensitive = true
+}
+
+output "aws_iam_access_key" {
+  value = aws_iam_access_key.github.id
+  sensitive = true
 }
